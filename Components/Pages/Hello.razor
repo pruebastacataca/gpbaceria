@@ -1,0 +1,31 @@
+@page "/hello"
+
+<PageTitle>Hello World Example</PageTitle>
+
+<h1>Blazor Hello World!</h1>
+
+<p>Current Message: <strong>@message</strong></p>
+
+<div class="mt-3">
+    <input @bind="userName" placeholder="Enter your name" class="form-control d-inline-block w-auto" />
+    <button class="btn btn-primary" @onclick="UpdateMessage">Greet Me</button>
+</div>
+
+@code {
+    // Component State
+    private string message = "Welcome to your first Blazor App!";
+    private string userName = "";
+
+    // Component Logic
+    private void UpdateMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            message = $"Hello, {userName}! Welcome to the world of Blazor.";
+        }
+        else
+        {
+            message = "Hello, Anonymous World!";
+        }
+    }
+}
