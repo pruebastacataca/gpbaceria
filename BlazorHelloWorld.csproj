@@ -7,4 +7,9 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <Compile Remove="BlazorHelloWorld.Tests\**" />
+  </ItemGroup>
+
 </Project>
