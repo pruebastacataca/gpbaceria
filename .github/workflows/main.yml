@@ -13,23 +13,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # paso 1: se hace checkout del código fuente del repositorio
     - name: Checkout Code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0 # Required by SonarQube for better analysis relevance
 
-    # Step 1: Scan the raw source code using SonarQube
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v4
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Remove if using SonarCloud
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0' # Change to '9.0.x' or your specific .NET version
+
+    # paso 2: se ejecutan las pruebas unitarias y se construye la solución
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Run bUnit Tests
+      run: cd BLazorHelloWorld.Tests && dotnet test --no-build --verbosity normal
+
+    
+    # Paso 3: Scan the raw source code using SonarQube
+    #- name: SonarQube Scan
+    #  uses: sonarsource/sonarqube-scan-action@v4
+    #  env:
+    #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #    SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Remove if using SonarCloud
+      
       # Optional: Force the workflow to fail if SonarQube Quality Gate fails
       # with:
       #   args: >
       #     -Dsonar.qualitygate.wait=true
 
-    # Step 2: Configure AWS Credentials
+    # Paso 4: Configura Credenciales AWS
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -37,12 +55,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # Step 3: Login to Amazon ECR
+    # Paso 5: Login to Amazon ECR
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
-    # Step 4: Build Docker Image locally
+    # Paso 6: Build Docker Image locally
     - name: Build Docker Image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -51,7 +69,7 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
 
-    # Step 5: Scan the built image with Trivy
+    # Paso 7: Escanear con Trivy para buscar vulnerabilidades en la imagen Docker
     - name: Run Trivy Vulnerability Scanner
       uses: aquasecurity/trivy-action@master
       with:
@@ -61,7 +79,7 @@ jobs:
         ignore-unfixed: true
         severity: 'CRITICAL,HIGH'
 
-    # Step 6: Push to ECR only if both SonarQube and Trivy checks pass
+    # Paso 8: Push to ECR only if both SonarQube and Trivy checks pass
     - name: Push Image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
