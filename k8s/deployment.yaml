@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpbaceria-deployment
+  labels:
+    app: gpbaceria
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gpbaceria
+  template:
+    metadata:
+      labels:
+        app: gpbaceria
+    spec:
+      containers:
+      - name: gpbaceria
+        image: 295934382080.dkr.ecr.us-east-1.amazonaws.com/gpbaceria:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gpbaceria
+  labels:
+    app: gpbaceria
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: gpbaceria
+    tier: frontend
+  type: ClusterIP
