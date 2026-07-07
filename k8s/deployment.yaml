@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: web-server
-        image: 295934382080.dkr.ecr.us-east-1.amazonaws.com/gpbaceria:latest
+        image: 295934382080.dkr.ecr.us-east-1.amazonaws.com/gpbaceria:5df144ea97a5b874d20a3746d0222390434569d1
         ports:
         - containerPort: 8080
 ---
