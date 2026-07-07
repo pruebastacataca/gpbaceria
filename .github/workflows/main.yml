@@ -107,6 +107,7 @@ jobs:
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        kubectl rollout restart deployment.app/gpbaceria-app
 
 
 #Run sed -i "s|IMAGE_PLACEHOLDER|295934382080.dkr.ecr.us-east-1.amazonaws.com/***:f0bb37f197d7c151a7f2000405abd63f2060cb18|g" k8s/otro.yaml
