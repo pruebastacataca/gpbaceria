@@ -91,8 +91,6 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
     
     # Paso 9: Conectar al cluster de kubernetes
     - name: Update Kubeconfig
@@ -106,7 +104,7 @@ jobs:
     # Paso 11: Apply Kubernetes Manifests and update image dynamically
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f k8s/deployment.yaml
+#        kubectl apply -f k8s/deployment.yaml
         kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 #Run sed -i "s|IMAGE_PLACEHOLDER|295934382080.dkr.ecr.us-east-1.amazonaws.com/***:f0bb37f197d7c151a7f2000405abd63f2060cb18|g" k8s/otro.yaml
