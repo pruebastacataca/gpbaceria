@@ -99,8 +99,14 @@ jobs:
     - name: Setup Kubectl
       uses: azure/setup-kubectl@v4
 
-    # 7. Apply Kubernetes Manifests and update image dynamically
+    # Paso 11: Apply Kubernetes Manifests and update image dynamically
     - name: Deploy to Kubernetes
       run: |
-        sed -i "s|IMAGE_PLACEHOLDER|${{ env.image }}|g" k8s/otro.yaml
-        kubectl apply -f k8s/otro.yaml
+        kubectl apply -f k8s/deployment.yaml
+        kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+#Run sed -i "s|IMAGE_PLACEHOLDER|295934382080.dkr.ecr.us-east-1.amazonaws.com/***:f0bb37f197d7c151a7f2000405abd63f2060cb18|g" k8s/otro.yaml
+#Run sed -i "s|IMAGE_PLACEHOLDER|295934382080.dkr.ecr.us-east-1.amazonaws.com/***:f0bb37f197d7c151a7f2000405abd63f2060cb18|g" k8s/otro.yaml
+#deployment.apps/my-world-app unchanged
+#service/my-world-service unchanged
+#kubectl set image deployment.apps/my-world-app web-server=nginx:latest

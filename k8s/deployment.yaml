@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gpbaceria-deployment
+  name: gpbaceria-app
   labels:
     app: gpbaceria
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: gpbaceria
@@ -15,7 +15,7 @@ spec:
         app: gpbaceria
     spec:
       containers:
-      - name: gpbaceria
+      - name: web-server
         image: 295934382080.dkr.ecr.us-east-1.amazonaws.com/gpbaceria:latest
         ports:
         - containerPort: 8080
@@ -23,14 +23,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gpbaceria
-  labels:
-    app: gpbaceria
+  name: gpbaceria-service
 spec:
-  ports:
-    - port: 8080
-      targetPort: 8080
+  type: LoadBalancer
   selector:
     app: gpbaceria
-    tier: frontend
-  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
