@@ -102,9 +102,8 @@ jobs:
     # Paso 11: Apply Kubernetes Manifests and update image dynamically
     - name: Deploy to Kubernetes
       run: |
-        sed -i "s|IMAGE_PLACEHOLDER|${{ env.image }}|g" k8s/otro.yaml
-        kubectl apply -f k8s/otro.yaml
-        kubectl set image deployment.app/my-world-app web-server=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        kubectl apply -f k8s/deployment.yaml
+        kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 #Run sed -i "s|IMAGE_PLACEHOLDER|295934382080.dkr.ecr.us-east-1.amazonaws.com/***:f0bb37f197d7c151a7f2000405abd63f2060cb18|g" k8s/otro.yaml
 #Run sed -i "s|IMAGE_PLACEHOLDER|295934382080.dkr.ecr.us-east-1.amazonaws.com/***:f0bb37f197d7c151a7f2000405abd63f2060cb18|g" k8s/otro.yaml
