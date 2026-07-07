@@ -83,6 +83,10 @@ jobs:
         ignore-unfixed: true
         severity: 'CRITICAL,HIGH'
 
+    - name: Update Kubeconfig
+      run: |
+        aws eks update-kubeconfig --name eks-aceria-east1 --region us-east-1
+
     # Paso 8: Push to ECR only if both SonarQube and Trivy checks pass
     - name: Push Image to Amazon ECR
       env:
@@ -91,26 +95,21 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$MACHIN:$IMAGE_TAG .
+        echo "se hizo el build $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
         docker push $ECR_REGISTRY/$MACHIN:$IMAGE_TAG
         echo "Image pushed to ECR: $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
+        kubectl apply -f k8s/deployment.yaml
+        echo "Se hizo el apply del deployment.yaml"
+        kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$MACHIN:$IMAGE_TAG
+        echo "Se actualiza la imagen a : $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
+        kubectl rollout restart deployment.app/gpbaceria-app
 
 
     # Paso 9: Conectar al cluster de kubernetes
-    - name: Update Kubeconfig
-      run: |
-        aws eks update-kubeconfig --name eks-aceria-east1 --region us-east-1
-
-    # Paso 10: Set up kubectl CLI
-    - name: Setup Kubectl
-      uses: azure/setup-kubectl@v4
 
     # Paso 11: Apply Kubernetes Manifests and update image dynamically
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/deployment.yaml
-        kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$MACHIN:$IMAGE_TAG
-        echo "Se actualiza la iamgen a : $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
-        kubectl rollout restart deployment.app/gpbaceria-app
+#    - name: Deploy to Kubernetes
+#      run: |
 
 
 #Run sed -i "s|IMAGE_PLACEHOLDER|295934382080.dkr.ecr.us-east-1.amazonaws.com/***:f0bb37f197d7c151a7f2000405abd63f2060cb18|g" k8s/otro.yaml
