@@ -6,7 +6,6 @@ obtener la ip publica para crear el cluster
 
 terraform apply -var="ssh_key_name=ssh_key_1" -var="ssh_cidr=187.243.202.23/32"
 
-
 al inicior el cluste es necesario aplicar estos dos comandos 
 
 aws eks update-kubeconfig --region us-east-1 --name eks-aceria-east1
@@ -14,8 +13,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 
 para aplicar kubernetes clonar el repositorio o navegar a la carpeta donde se tengan 
-git clone https://github.com/miusuariodegit/kubernetes.git
-cd kubernetes
+cd k8s
 
 y aplicar los kubernetes
 

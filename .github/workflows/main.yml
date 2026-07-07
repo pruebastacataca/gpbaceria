@@ -93,7 +93,7 @@ jobs:
     # Paso 9: Conectar al cluster de kubernetes
     - name: Update Kubeconfig
       run: |
-        aws eks update-kubeconfig --region us-east-1 --name eks-aceria-east1
+        aws eks update-kubeconfig --name eks-aceria-east1 --region us-east-1
 
     # Paso 10: Set up kubectl CLI
     - name: Setup Kubectl
