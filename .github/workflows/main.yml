@@ -23,16 +23,12 @@ jobs:
       matrix:
         language: [ 'csharp' ]
 
-
-
     steps:
     # paso 1: se hace checkout del código fuente del repositorio
     - name: Checkout Code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0 
-<<<<<<< .merge_file_b4XEUH
-=======
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -48,7 +44,6 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
->>>>>>> .merge_file_ivLBjB
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
@@ -118,8 +113,3 @@ jobs:
         echo "Se actualiza la imagen a : $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
         kubectl rollout restart deployment.app/gpbaceria-app
 
-
-<<<<<<< .merge_file_b4XEUH
-
-=======
->>>>>>> .merge_file_ivLBjB
